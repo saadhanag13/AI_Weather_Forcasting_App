@@ -1,5 +1,6 @@
 # backend/main.py
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import numpy as np
 from model_loader import model, scaler
@@ -10,6 +11,10 @@ app = FastAPI()
 
 class ForecastRequest(BaseModel):
     city: str
+
+@app.get("/")
+def read_root():
+    return {"message": "🌦️ AI Weather Forecasting API is running!"}
 
 @app.post("/predict")
 def predict_weather(request: ForecastRequest):
@@ -33,3 +38,12 @@ def predict_weather(request: ForecastRequest):
         "predicted_temperature": round(pred_actual, 2),
         "unit": "°C"
     }
+    
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, specify your frontend URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)

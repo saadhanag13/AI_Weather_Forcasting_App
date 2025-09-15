@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # FastAPI Backend Service
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+    volumes:
+      - ./backend/models:/app/models  # Mount models directory
+    networks:
+      - weather_network
+    restart: unless-stopped
+
+  # Streamlit Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - BACKEND_URL=http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - weather_network
+    restart: unless-stopped
+
+networks:
+  weather_network:
+    driver: bridge
+
+volumes:
+  models_data:
+    driver: local

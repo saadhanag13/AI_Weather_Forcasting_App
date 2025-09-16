@@ -8,9 +8,27 @@ from concurrent.futures import ThreadPoolExecutor
 import warnings
 warnings.simplefilter(action="ignore", category=FutureWarning)
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 
+print(f"🔗 Backend URL: {BACKEND_URL}")
 print("🚀 Starting Smart Weather Decision Dashboard...")
+
+def fetch_enhanced_weather(city):
+    """Fetch enhanced weather data with hourly forecasts"""
+    # Use environment variable instead of hardcoded URL
+    API_URL = f"{BACKEND_URL}/predict"
+    payload = {"city": city}
+    
+    response = requests.post(API_URL, json=payload, timeout=5)
+    
+    if response.status_code == 200:
+        result = response.json()
+        base_temp = result.get("predicted_temperature", 20)
+    else:
+        base_temp = np.random.randint(10, 30)
 
 # 🌍 Enhanced City Configuration with Decision Context
 CITY_DATA = {
@@ -152,7 +170,6 @@ if 'hourly_data' not in st.session_state:
     st.session_state.hourly_data = {}
 if 'last_fetch_time' not in st.session_state:
     st.session_state.last_fetch_time = None
-
 
 # 🤖 Enhanced Weather Data Generation with Hourly Forecasts
 def generate_hourly_forecast(city, base_temp):
@@ -430,17 +447,27 @@ footer {{visibility: hidden;}}
 </style>
 """, unsafe_allow_html=True)
 
-# 🌟 Main Dashboard Header
-st.markdown(f"""
-<div class="main-content">
-    <h1 style="text-align: center; font-size: 2.5rem; margin-bottom: 0;">
-        Weather Insights for {st.session_state.user_persona}s in {city_name} {city_info['icon']}
-    </h1>
-</div>
-""", unsafe_allow_html=True)
-
-# 🎯 Decision-Focused Weather Display
+# 🌟 Conditional Dashboard Header
 weather_data = st.session_state.weather_data.get(st.session_state.selected_city)
+
+if weather_data:
+    # Show personalized header when data is available
+    st.markdown(f"""
+    <div class="main-content">
+        <h1 style="text-align: center; font-size: 2.5rem; margin-bottom: 0;">
+            Weather Insights for {st.session_state.user_persona}s in {city_name} {city_info['icon']}
+        </h1>
+    </div>
+    """, unsafe_allow_html=True)
+else:
+    # Show generic header for new users
+    st.markdown(f"""
+        <div class="main-content">
+            <h1 style="text-align: center; font-size: 2.5rem; margin-bottom: 0;">
+                Smart Weather Forecast Dashboard
+            </h1>
+        </div>
+    """, unsafe_allow_html=True)
 
 if weather_data:
     
@@ -695,14 +722,6 @@ if weather_data:
 
 else:
     # First-time user experience
-    st.markdown(f"""
-        <div class="main-content">
-            <h1 style="text-align: center; font-size: 2.5rem; margin-bottom: 0;">
-                Smart Weather Forecast Dashboard
-            </h1>
-        </div>
-    """, unsafe_allow_html=True)
-    
     st.markdown("""
     <div class="main-content">
         <h2>👋 Welcome to Smart Weather Decisions!</h2>

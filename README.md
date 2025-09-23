@@ -41,9 +41,6 @@ Weather_Forecasting_App/
 │   ├── models/
 │   │   ├── global_weather_saved_model.keras
 │   │   └── scaler_global.pkl
-│   ├── api/
-│   ├── config/
-│   ├── utils/
 │   ├── main.py
 │   ├── model_loader.py
 │   ├── data_fetcher.py
@@ -52,11 +49,9 @@ Weather_Forecasting_App/
 │   ├── Dockerfile
 │   └── .env
 ├── frontend/
-│   ├── pages/
-│   ├── components/
 │   ├── utils/
+│   │   └── timezone_utils.py
 │   ├── app.py
-│   ├── timezone_utils.py
 │   ├── requirements.txt
 │   ├── Dockerfile
 │   └── .env

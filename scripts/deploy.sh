@@ -77,7 +77,7 @@ DEBUG=False
 OPENMETEO_BASE_URL=https://api.open-meteo.com/v1
 
 # Model Configuration
-MODEL_PATH=/app/models/weather_model.keras
+MODEL_PATH=/app/backend/models/weather_model.keras
 MODEL_VERSION=1.0.0
 
 # Logging

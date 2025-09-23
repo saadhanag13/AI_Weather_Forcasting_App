@@ -21,6 +21,7 @@ echo "✅ Docker is installed and running"
 # Create necessary directories if they don't exist
 echo "📁 Creating project structure..."
 
+mkdir -p backend/models
 mkdir -p backend/api
 mkdir -p backend/utils
 mkdir -p backend/config
@@ -46,7 +47,7 @@ DEBUG=True
 OPENMETEO_BASE_URL=https://api.open-meteo.com/v1
 
 # Model Configuration
-MODEL_PATH=/app/global_weather_saved_model.keras
+MODEL_PATH=/app/backend/models/global_weather_saved_model.keras
 MODEL_VERSION=1.0.0
 
 # Database (if you add one later)
@@ -80,9 +81,9 @@ echo "🔧 Setting up permissions..."
 chmod +x scripts/*.sh
 
 # Check if model file exists
-if [ ! -f "backend/global_weather_saved_model.keras" ]; then
-    echo "⚠️  Warning: global_weather_saved_model.keras not found in backend/"
-    echo "   Please copy your trained model to backend/global_weather_saved_model.keras"
+if [ ! -f "backend/models/global_weather_saved_model.keras" ]; then
+    echo "⚠️  Warning: global_weather_saved_model.keras not found in backend/models/"
+    echo "   Please copy your trained model to backend/models/global_weather_saved_model.keras"
 fi
 
 # Check for main application files
@@ -100,7 +101,7 @@ echo ""
 echo "✅ Setup complete!"
 echo ""
 echo "Next steps:"
-echo "1. Copy your trained model to: backend/global_weather_saved_model.keras"
+echo "1. Copy your trained model to: backend/models/global_weather_saved_model.keras"
 echo "2. Move your FastAPI code to: backend/main.py"
 echo "3. Move your Streamlit code to: frontend/app.py"
 echo "4. Split your requirements.txt into backend and frontend versions"

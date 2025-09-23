@@ -1,3 +1,4 @@
+#frontend/Dockerfile
 # Use Python 3.9 slim image
 FROM python:3.9-slim
 
@@ -25,6 +26,9 @@ COPY . .
 
 # Expose port
 EXPOSE 8501
+
+# In frontend/Dockerfile
+RUN apt-get update && apt-get install -y curl
 
 # Command to run Streamlit
 CMD ["streamlit", "run", "app.py", "--server.address", "0.0.0.0", "--server.port", "8501"]

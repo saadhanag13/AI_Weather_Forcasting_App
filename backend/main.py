@@ -1,3 +1,4 @@
+#backend/main.py
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -6,6 +7,8 @@ import numpy as np
 import logging
 from datetime import datetime
 from dotenv import load_dotenv
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Import your existing modules
 try:
@@ -84,25 +87,24 @@ def read_root():
 
 @app.get("/health", response_model=HealthResponse)
 def health_check():
-    """Health check endpoint for Docker and monitoring"""
+    """Health check endpoint for Docker, dev, and monitoring"""
     try:
-        # Check model availability
-        model_status = "pass" if MODEL_LOADED and model is not None else "fail"
-        
-        # Check if model file exists
-        model_path = os.getenv("MODEL_PATH", "/app/models/weather_model.keras")
-        model_file_exists = os.path.exists(model_path)
-        
-        # Overall health status
-        is_healthy = MODEL_LOADED and model is not None
-        
+        # Correct paths relative to backend/
+        model_path = os.path.join(os.path.dirname(__file__), "models", "global_weather_saved_model.keras")
+        scaler_path = os.path.join(os.path.dirname(__file__), "models", "scaler_global.pkl")
+
+        # Run checks
         checks = {
-            "model_loaded": model_status,
-            "model_file_exists": model_file_exists,
+            "model_loaded": MODEL_LOADED and model is not None,
+            "model_file_exists": os.path.exists(model_path),
+            "scaler_file_exists": os.path.exists(scaler_path),
             "scaler_available": scaler is not None,
-            "data_fetcher_available": "fetch_city_data" in globals()
+            "data_fetcher_available": callable(globals().get("fetch_city_data")),
         }
-        
+
+        # Overall health
+        is_healthy = all(checks.values())
+
         return HealthResponse(
             status="healthy" if is_healthy else "unhealthy",
             timestamp=datetime.now().isoformat(),
@@ -111,10 +113,11 @@ def health_check():
             model_loaded=MODEL_LOADED,
             checks=checks
         )
-        
+
     except Exception as e:
         logger.error(f"Health check failed: {e}")
         raise HTTPException(status_code=503, detail=f"Health check failed: {str(e)}")
+
 
 @app.post("/predict", response_model=WeatherResponse)
 def predict_weather(request: ForecastRequest):
@@ -171,8 +174,7 @@ def predict_weather(request: ForecastRequest):
 
 @app.get("/cities")
 def get_supported_cities():
-    """Get list of supported cities"""
-    # Your supported cities (match with your CITY_DATA in frontend)
+
     cities = [
         "London", "New York", "Tokyo", "Sydney", "Delhi", "Paris",
         "Berlin", "Moscow", "Beijing", "Seoul", "Singapore", "Dubai",

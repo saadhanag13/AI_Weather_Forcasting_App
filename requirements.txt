@@ -41,4 +41,4 @@ fastapi-cors==0.0.6
 ⚠️ Notes:
 protobuf==3.20.3 is pinned to avoid conflicts with TensorFlow 2.11.0.
 pydantic==1.10.14 is used because FastAPI currently requires Pydantic v1 (not v2) for compatibility.
-openmeteo-requests is a 3rd party Open-Meteo Python wrapper that must be installed manually if you’ve been using it (as in your current code).
+openmeteo-requests is a 3rd party Open-Meteo Python wrapper that must be installed manually.

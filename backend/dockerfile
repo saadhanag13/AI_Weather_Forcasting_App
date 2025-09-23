@@ -1,3 +1,4 @@
+#backend/Dockerfile
 # Use Python 3.9 slim image
 FROM python:3.9-slim
 
@@ -28,6 +29,9 @@ RUN mkdir -p /app/models /app/logs
 
 # Copy application code
 COPY . .
+
+# Ensure model file is copied
+COPY models/ /app/models/
 
 # Create a non-root user for security
 RUN useradd --create-home --shell /bin/bash app && \

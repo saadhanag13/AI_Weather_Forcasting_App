@@ -36,6 +36,7 @@ missing_count=0
 echo ""
 echo "📁 Directory Structure:"
 check_dir "backend" || ((missing_count++))
+check_dir "backend/models" || ((missing_count++))
 check_dir "frontend" || ((missing_count++))
 check_dir "scripts" || ((missing_count++))
 check_dir "logs" || ((missing_count++))
@@ -62,7 +63,7 @@ echo "🤖 Your Model Files:"
 check_file "backend/model_loader.py" || ((missing_count++))
 check_file "backend/data_fetcher.py" || ((missing_count++))
 check_file "backend/model_utils.py" || ((missing_count++))
-check_file "backend/global_weather_saved_model.keras" || ((missing_count++))
+check_file "backend/models/global_weather_saved_model.keras" || ((missing_count++))
 
 echo ""
 echo "⚙️  Configuration Files:"
@@ -109,5 +110,5 @@ echo ""
 echo "📝 File Movement Guide:"
 echo "   Your current main.py → backend/main.py"
 echo "   Your current app.py → frontend/app.py" 
-echo "   Your model file → backend/models/weather_model.keras"
+echo "   Your model file → backend/models/global_weather_saved_model.keras"
 echo "   Your supporting modules → backend/ directory"

@@ -1,4 +1,4 @@
-#frontend/timezone_utils.py
+#frontend/utils/timezone_utils.py
 import pytz
 from datetime import datetime
 from typing import Tuple
@@ -87,20 +87,7 @@ class TimezoneManager:
             `;
         </script>
         """
-    
-    # @staticmethod
-    # def render_timezone_detector_widget():
-    #     """Renders a widget to help detect user timezone"""
-    #     st.sidebar.markdown("### 🔍 Auto-detect Your Timezone")
-        
-    #     # Show JavaScript detector
-    #     components.html(
-    #         TimezoneManager.get_javascript_timezone_detector(), height=150, scrolling=False)
-        
-    #     detected_tz = st.sidebar.text_input("Paste detected timezone here:", placeholder="e.g., Asia/Kolkata", help="Copy the timezone from the widget above")
-        
-    #     return detected_tz if detected_tz in pytz.all_timezones else None
-    
+
     @staticmethod
     def get_timezone_from_coordinates(lat: float, lon: float, tolerance: float = 5.0) -> str:
         
@@ -113,12 +100,7 @@ class TimezoneManager:
     
     @staticmethod
     def render_timezone_selector() -> str:
-        """
-        Renders timezone selection interface in sidebar
-        
-        Returns:
-            Selected timezone string
-        """
+    
         st.sidebar.header("🌍 Timezone Settings")
         
         # Detection method selection
@@ -128,19 +110,7 @@ class TimezoneManager:
         
         if detection_method == "Manual Selection":
             user_timezone = st.sidebar.selectbox("Select your timezone:", TimezoneManager.COMMON_TIMEZONES, index=1, help="Choose your local timezone from the list")
-            
-        # elif detection_method == "Auto-detect (Browser)":
-        #     detected = TimezoneManager.render_timezone_detector_widget()
-        #     if detected:
-        #         user_timezone = detected
-        #         st.sidebar.success(f"✅ Using: {detected}")
-        #     else:
-        #         st.sidebar.warning("⚠️ Auto-detection failed, using manual selection")
-        #         user_timezone = st.sidebar.selectbox(
-        #             "Fallback - Select timezone:",
-        #             TimezoneManager.COMMON_TIMEZONES,
-        #             index=1
-        #         )
+  
                 
         else:  # By Location
             st.sidebar.markdown("### 📍 Location-based Detection")
@@ -182,7 +152,6 @@ class TimezoneManager:
     
     @staticmethod
     def get_current_time_in_timezone(timezone_str: str) -> datetime:
-        """Get current time in specified timezone"""
         utc_now = datetime.now(pytz.UTC)
         return TimezoneManager.convert_utc_to_timezone(utc_now, timezone_str)
     
@@ -205,27 +174,16 @@ class TimezoneManager:
     
     @staticmethod
     def render_timezone_info(user_timezone: str):
-        """Render timezone information in sidebar"""
         current_local = TimezoneManager.get_current_time_in_timezone(user_timezone)
-        
-        # # st.sidebar.markdown("---")
-        # st.sidebar.markdown("### ⏰ Current Time Info")
-        # st.sidebar.success(f"🕐 **Current time:** {current_local.strftime('%H:%M:%S')}")
-        # st.sidebar.info(f"🌐 **Timezone:** {user_timezone}")
-        # st.sidebar.info(f"🏷️ **Zone code:** {current_local.strftime('%Z')}")
-        
         return current_local
 
 
 # Convenience functions for easy import
 def get_user_timezone() -> str:
-    """Simple function to get user timezone with UI"""
     return TimezoneManager.render_timezone_selector()
 
 def format_timestamp(utc_time: datetime, timezone: str) -> Tuple[str, str, datetime]:
-    """Simple function to format timestamp"""
     return TimezoneManager.format_time_for_display(utc_time, timezone)
 
 def get_current_user_time(timezone: str) -> datetime:
-    """Simple function to get current time in user timezone"""
     return TimezoneManager.get_current_time_in_timezone(timezone)

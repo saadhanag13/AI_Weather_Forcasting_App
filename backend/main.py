@@ -20,6 +20,8 @@ except ImportError as e:
     logging.error(f"Failed to import model modules: {e}")
     MODEL_LOADED = False
     model, scaler = None, None
+    
+# Remove premature uvicorn.run call; move it to __main__ block below
 
 # Load environment variables
 load_dotenv()
@@ -210,9 +212,10 @@ def get_model_info():
 
 if __name__ == "__main__":
     import uvicorn
+    port = int(os.getenv("PORT", 8000))
     uvicorn.run(
         app,
         host=os.getenv("API_HOST", "0.0.0.0"),
-        port=int(os.getenv("API_PORT", 8000)),
+        port=port,
         reload=os.getenv("DEBUG", "False").lower() == "true"
     )

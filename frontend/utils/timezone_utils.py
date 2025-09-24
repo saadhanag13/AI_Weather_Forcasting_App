@@ -110,7 +110,7 @@ class TimezoneManager:
         
         if detection_method == "Manual Selection":
             user_timezone = st.sidebar.selectbox("Select your timezone:", TimezoneManager.COMMON_TIMEZONES, index=1, help="Choose your local timezone from the list")
-  
+
                 
         else:  # By Location
             st.sidebar.markdown("### 📍 Location-based Detection")

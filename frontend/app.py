@@ -919,5 +919,7 @@ if st.session_state.last_fetch_time and weather_data is not None:
         <strong>Last updated:</strong> {st.session_state.last_fetch_time.strftime('%H:%M:%S %Z')} ({time_ago}) | 
         <strong>Data accuracy:</strong> {weather_data.get('confidence', 'N/A')}% | 
         <strong>Your timezone:</strong> {st.session_state.user_timezone}
+        <br><br>
+        Made with ♥ by <a href= "https://saadhanag13.github.io/MyResume/" target="_blank"> Saadhana Ganesa Narasimhan </a>
     </div>
     """, unsafe_allow_html=True)

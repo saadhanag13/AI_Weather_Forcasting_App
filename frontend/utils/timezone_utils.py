@@ -1,6 +1,7 @@
 #frontend/utils/timezone_utils.py
 import pytz
 from datetime import datetime
+from dateutil import parser
 from typing import Tuple
 import streamlit as st
 import streamlit.components.v1 as components
@@ -138,17 +139,26 @@ class TimezoneManager:
     
     @staticmethod
     def format_time_for_display(utc_time: datetime, target_timezone: str, format_string: str = '%H:%M:%S') -> Tuple[str, str, datetime]:
-
-        if isinstance(utc_time, str):
-            # Handle ISO format strings
-            utc_time = datetime.fromisoformat(utc_time.replace('Z', '+00:00'))
         
-        local_time = TimezoneManager.convert_utc_to_timezone(utc_time, target_timezone)
-        
-        formatted_time = local_time.strftime(format_string)
-        timezone_abbr = local_time.strftime('%Z')
-        
-        return formatted_time, timezone_abbr, local_time
+        try: 
+            if isinstance(utc_time, str):
+                # Handle ISO format strings
+                # utc_time = datetime.fromisoformat(utc_time.replace('Z', '+00:00'))
+                utc_time = parser.parse(utc_time)
+            
+            local_time = TimezoneManager.convert_utc_to_timezone(utc_time, target_timezone)
+            
+            formatted_time = local_time.strftime(format_string)
+            timezone_abbr = local_time.strftime('%Z')
+            
+            return formatted_time, timezone_abbr, local_time
+        except Exception as e:
+            print(f"Error formatting time: {e}, falling back to UTC")
+            if isinstance(utc_time, str):
+                utc_time = datetime.utcnow().replace(tzinfo=pytz.UTC)
+            local_time = TimezoneManager.convert_utc_to_timezone(utc_time, target_timezone)
+            return local_time.strftime(format_string), local_time.strftime('%Z'), local_time
+    
     
     @staticmethod
     def get_current_time_in_timezone(timezone_str: str) -> datetime:
